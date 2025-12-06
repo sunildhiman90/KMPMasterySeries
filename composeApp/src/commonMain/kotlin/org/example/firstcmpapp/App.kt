@@ -31,6 +31,7 @@ fun App() {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            logMessage("KMP:", "KMP Logging")
             Button(onClick = { showContent = !showContent }) {
                 Text("Click me!")
             }
