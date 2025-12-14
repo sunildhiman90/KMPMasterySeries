@@ -8,6 +8,6 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = "FirstCMPApp",
     ) {
-        App(MultiplatformSettingsFactory())
+        App(org.example.firstcmpapp.ch6_sharedPreferences.MultiplatformSettingsFactory())
     }
 }

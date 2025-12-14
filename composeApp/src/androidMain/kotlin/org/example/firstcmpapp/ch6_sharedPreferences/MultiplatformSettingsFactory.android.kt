@@ -1,4 +1,4 @@
-package org.example.firstcmpapp
+package org.example.firstcmpapp.ch6_sharedPreferences
 
 import android.content.Context
 import com.russhwolf.settings.Settings

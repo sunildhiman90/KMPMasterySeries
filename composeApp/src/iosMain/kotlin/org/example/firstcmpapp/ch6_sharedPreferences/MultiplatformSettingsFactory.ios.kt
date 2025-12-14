@@ -1,4 +1,4 @@
-package org.example.firstcmpapp
+package org.example.firstcmpapp.ch6_sharedPreferences
 
 import com.russhwolf.settings.NSUserDefaultsSettings
 import com.russhwolf.settings.Settings

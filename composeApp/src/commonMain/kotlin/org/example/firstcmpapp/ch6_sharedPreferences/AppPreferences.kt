@@ -1,4 +1,4 @@
-package org.example.firstcmpapp
+package org.example.firstcmpapp.ch6_sharedPreferences
 
 interface AppPreferences {
 
