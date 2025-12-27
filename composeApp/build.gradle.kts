@@ -11,6 +11,7 @@ plugins {
 
 
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -49,6 +50,8 @@ kotlin {
             implementation(libs.androidx.activity.compose)
 
             implementation(libs.ktor.client.android)
+
+            implementation(libs.sqldelight.android.driver)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -67,18 +70,30 @@ kotlin {
 
             implementation(libs.multiplatform.settings)
 
-
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+
+            implementation(libs.sqldelight.native.driver)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
             implementation(libs.ktor.client.jvm)
+
+            implementation(libs.sqldelight.jvm.driver)
         }
         jsMain.dependencies {
             implementation(libs.ktor.client.js)
+        }
+
+        webMain.dependencies {
+
+            // sqldelight
+            implementation(libs.sqldelight.web.worker.driver)
+            implementation(npm("@cashapp/sqldelight-sqljs-worker", libs.versions.sqldelight.get()))
+            implementation(npm("sql.js", libs.versions.sqljs.get()))
+            implementation(devNpm("copy-webpack-plugin", libs.versions.copyWebpackPlugin.get()))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -128,3 +143,16 @@ compose.desktop {
         }
     }
 }
+
+
+sqldelight {
+    databases {
+        create("CmpappDb") {
+            packageName.set("org.example.firstcmpapp")
+            generateAsync.set(true)
+        }
+    }
+    linkSqlite.set(true)
+}
+
+

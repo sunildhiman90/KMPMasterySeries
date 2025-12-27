@@ -11,7 +11,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            App(org.example.firstcmpapp.ch6_sharedPreferences.MultiplatformSettingsFactory(this))
+            App(
+                databaseDriverFactory = DatabaseDriverFactory(this@MainActivity),
+                multiplatformSettingsFactory = org.example.firstcmpapp.ch6_sharedPreferences.MultiplatformSettingsFactory(this))
         }
     }
 }

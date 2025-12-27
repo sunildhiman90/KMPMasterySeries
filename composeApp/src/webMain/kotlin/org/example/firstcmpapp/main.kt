@@ -6,6 +6,9 @@ import androidx.compose.ui.window.ComposeViewport
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
     ComposeViewport {
-        App(org.example.firstcmpapp.ch6_sharedPreferences.MultiplatformSettingsFactory())
+        App(
+            databaseDriverFactory = DatabaseDriverFactory(),
+            org.example.firstcmpapp.ch6_sharedPreferences.MultiplatformSettingsFactory()
+        )
     }
 }
