@@ -1,4 +1,4 @@
-package org.example.firstcmpapp
+package org.example.firstcmpapp.ch8_localDatabaseSqldelight
 
 import app.cash.sqldelight.db.SqlDriver
 

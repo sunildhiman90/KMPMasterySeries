@@ -1,8 +1,9 @@
-package org.example.firstcmpapp
+package org.example.firstcmpapp.ch8_localDatabaseSqldelight
 
 import app.cash.sqldelight.async.coroutines.awaitCreate
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
+import org.example.firstcmpapp.CmpappDb
 import java.util.Properties
 
 actual class DatabaseDriverFactory {
@@ -13,7 +14,7 @@ actual class DatabaseDriverFactory {
                 put("foreign_keys", "true")
             }
         )
-        CmpappDb.Schema.awaitCreate(driver)
+        CmpappDb.Companion.Schema.awaitCreate(driver)
         return driver
     }
 }

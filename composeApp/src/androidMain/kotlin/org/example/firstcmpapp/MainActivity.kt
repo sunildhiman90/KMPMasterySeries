@@ -12,7 +12,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             App(
-                databaseDriverFactory = DatabaseDriverFactory(this@MainActivity),
+                databaseDriverFactory = org.example.firstcmpapp.ch8_localDatabaseSqldelight.DatabaseDriverFactory(
+                    this@MainActivity
+                ),
                 multiplatformSettingsFactory = org.example.firstcmpapp.ch6_sharedPreferences.MultiplatformSettingsFactory(this))
         }
     }
