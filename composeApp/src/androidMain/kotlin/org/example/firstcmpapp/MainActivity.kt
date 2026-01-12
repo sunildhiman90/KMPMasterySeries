@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import org.koin.android.ext.koin.androidContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -11,11 +12,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            App(
-                databaseDriverFactory = org.example.firstcmpapp.ch8_localDatabaseSqldelight.DatabaseDriverFactory(
-                    this@MainActivity
-                ),
-                multiplatformSettingsFactory = org.example.firstcmpapp.ch6_sharedPreferences.MultiplatformSettingsFactory(this))
+            App()
         }
     }
 }

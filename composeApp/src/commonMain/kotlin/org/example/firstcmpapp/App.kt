@@ -22,105 +22,109 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.example.firstcmpapp.ch6_sharedPreferences.MultiplatformSettingsFactory
 import org.example.firstcmpapp.ch8_localDatabaseSqldelight.DatabaseDriverFactory
+import org.example.firstcmpapp.di.cacheModule
+import org.example.firstcmpapp.di.platformModule
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.KoinApplication
+import org.koin.compose.koinInject
+import org.koin.dsl.KoinAppDeclaration
 
 @Composable
 @Preview
-fun App(
-    databaseDriverFactory: DatabaseDriverFactory,
-    multiplatformSettingsFactory: MultiplatformSettingsFactory
-) {
+fun App() {
+
     MaterialTheme {
 
-        val dbHelper = remember {  DbHelper(databaseDriverFactory) }
-        val productsDao = remember { ProductsDaoImpl(dbHelper) }
+            val productsDao = koinInject<ProductsDao>()
 
-        val scope = rememberCoroutineScope()
-        LaunchedEffect(Unit) {
-            productsDao.insertProduct("Product 2", 12.0)
-        }
-
-        var updated by remember { mutableStateOf(false) }
-
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .systemBarsPadding()
-                .padding(top = 16.dp)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Button(onClick = {
-                scope.launch {
-                    try {
-                        productsDao.insertProduct("Product 2", 12.0)
-                        updated = !updated
-                    } catch (e: Exception) {
-                        println("Error: ${e.message}")
-                        e.printStackTrace()
-                    }
-
-                }
-            }) {
-                Text("Insert Product")
+            val scope = rememberCoroutineScope()
+            LaunchedEffect(Unit) {
+                productsDao.insertProduct("Product 2", 12.0)
             }
 
-            var products = remember { mutableStateListOf<ProductItem?>(null) }
+            var updated by remember { mutableStateOf(false) }
 
-            LaunchedEffect(updated) {
+            Column(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .systemBarsPadding()
+                    .padding(top = 16.dp)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Button(onClick = {
+                    scope.launch {
+                        try {
+                            productsDao.insertProduct("Product 2", 12.0)
+                            updated = !updated
+                        } catch (e: Exception) {
+                            println("Error: ${e.message}")
+                            e.printStackTrace()
+                        }
 
-                scope.launch {
-                    productsDao.selectAllProducts()?.let {
-                        println("products size: ${it.size}")
-                        products.clear()
-                        products.addAll(it)
                     }
+                }) {
+                    Text("Insert Product")
+                }
+
+                var products = remember { mutableStateListOf<ProductItem?>(null) }
+
+                LaunchedEffect(updated) {
+
+                    scope.launch {
+                        productsDao.selectAllProducts()?.let {
+                            println("products size: ${it.size}")
+                            products.clear()
+                            products.addAll(it)
+                        }
 
 //
 //                    productsDao.searchProductsByName("Product 3")?.let {
 //                        products.clear()
 //                        products.addAll(it)
 //                    }
+                    }
+
                 }
 
-            }
-
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(
-                    16.dp
-                )
-            ) {
-                items(products) { product ->
-                    Card(
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer
-                        ),
-                        shape = MaterialTheme.shapes.small
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(
+                        16.dp
+                    )
+                ) {
+                    items(products) { product ->
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer
+                            ),
+                            shape = MaterialTheme.shapes.small
                         ) {
-                            Text("${product?.name} ${product?.price}")
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text("${product?.name} ${product?.price}")
 
-                            Button(onClick = {
-                                scope.launch {
-                                    productsDao.deleteProductById(product?.id!!)
+                                Button(onClick = {
+                                    scope.launch {
+                                        productsDao.deleteProductById(product?.id!!)
+                                    }
+                                    updated = !updated
+                                }) {
+                                    Text("Delete")
                                 }
-                                updated = !updated
-                            }) {
-                                Text("Delete")
                             }
                         }
                     }
                 }
+
+
             }
-
-
         }
-    }
+
+
 }

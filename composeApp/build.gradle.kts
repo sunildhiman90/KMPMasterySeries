@@ -52,6 +52,7 @@ kotlin {
             implementation(libs.ktor.client.android)
 
             implementation(libs.sqldelight.android.driver)
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -69,6 +70,11 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
 
             implementation(libs.multiplatform.settings)
+
+            //koin
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
 
         }
         iosMain.dependencies {
