@@ -7,5 +7,5 @@ fun initKoin(
     appDeclaration: KoinAppDeclaration? = null
 ) = startKoin {
     appDeclaration?.invoke(this)
-    modules(platformModule() + cacheModule())
+    modules(platformModule() + cacheModule() + viewModelModule())
 }
