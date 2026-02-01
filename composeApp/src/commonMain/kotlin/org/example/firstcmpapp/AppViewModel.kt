@@ -6,11 +6,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.collections.List
 
 sealed class AppEvent {
     data class InsertProduct(val name: String, val price: Double): AppEvent()
     data class DeleteProduct(val id: Long): AppEvent()
     data object LoadProducts: AppEvent()
+    data class OnProductClick(val id: Long): AppEvent()
 }
 
 data class AppUiState(
@@ -57,6 +59,10 @@ class AppViewModel(
                         )
                     }
                 }
+            }
+
+            else -> {
+
             }
         }
     }
