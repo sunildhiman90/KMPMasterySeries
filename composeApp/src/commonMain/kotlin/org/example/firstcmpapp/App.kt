@@ -1,6 +1,7 @@
 package org.example.firstcmpapp
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,6 +14,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Brightness4
+import androidx.compose.material.icons.filled.Brightness7
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,6 +37,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.savedstate.read
 import kotlinx.serialization.Serializable
+import org.example.firstcmpapp.ch6_sharedPreferences.AppPreferences
+import org.example.firstcmpapp.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
@@ -45,11 +50,45 @@ data class Detail(
     val id: Long,
 )
 
+
+enum class AppThemeMode {
+    LIGHT,
+    DARK,
+    SYSTEM
+}
+
+
 @Composable
 @Preview
 fun App() {
 
-    MaterialTheme {
+    //Use from preferences
+    val systemDarkTheme = isSystemInDarkTheme()
+    val appPreferences = koinInject<AppPreferences>()
+    var themeMode by remember {
+        mutableStateOf(
+            appPreferences.getString(
+                "theme",
+                AppThemeMode.SYSTEM.name
+            )
+        )
+    }
+
+    var isDarkTheme by remember(themeMode) {
+        mutableStateOf(
+            when (themeMode) {
+                AppThemeMode.DARK.name -> true
+                AppThemeMode.SYSTEM.name -> systemDarkTheme
+                else -> false
+            }
+        )
+    }
+
+
+
+    AppTheme(
+        darkTheme = isDarkTheme
+    ) {
 
         val navController = rememberNavController()
 
@@ -81,9 +120,20 @@ fun App() {
                 if (uiState.isLoading) {
                     CircularProgressIndicator()
                 } else {
-                    ProductList(uiState = uiState, onEvent = onEvent, onUpdated = {
-                        updated = !updated
-                    })
+                    ProductList(
+                        uiState = uiState,
+                        onEvent = onEvent,
+                        onUpdated = {
+                            updated = !updated
+                        },
+                        isDarkTheme = isDarkTheme,
+                        onThemeToggle = {
+                            println("onThemeToggle=$it")
+                            val theme = if (it) AppThemeMode.DARK.name else AppThemeMode.LIGHT.name
+                            appPreferences.putString("theme", theme)
+                            themeMode = theme
+                        }
+                    )
                 }
 
             }
@@ -140,7 +190,9 @@ fun App() {
 private fun ProductList(
     onEvent: (AppEvent) -> Unit,
     onUpdated: () -> Unit,
-    uiState: AppUiState
+    uiState: AppUiState,
+    isDarkTheme: Boolean,
+    onThemeToggle: (isDark: Boolean) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -150,21 +202,27 @@ private fun ProductList(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Button(onClick = {
-            try {
-                onEvent(
-                    AppEvent.InsertProduct(
-                        name = "Product 2",
-                        price = 12.0
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Button(onClick = {
+                try {
+                    onEvent(
+                        AppEvent.InsertProduct(
+                            name = "Product 2",
+                            price = 12.0
+                        )
                     )
-                )
-                onUpdated()
-            } catch (e: Exception) {
-                println("Error: ${e.message}")
-                e.printStackTrace()
+                    onUpdated()
+                } catch (e: Exception) {
+                    println("Error: ${e.message}")
+                    e.printStackTrace()
+                }
+            }) {
+                Text("Insert Product")
             }
-        }) {
-            Text("Insert Product")
+            IconButton(onClick = { onThemeToggle(!isDarkTheme) }) {
+                val icon = if (isDarkTheme) Icons.Default.Brightness7 else Icons.Default.Brightness4
+                Icon(icon, contentDescription = "Theme toggle")
+            }
         }
 
         var products = uiState.products

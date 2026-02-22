@@ -3,8 +3,12 @@ package org.example.firstcmpapp.ch6_sharedPreferences
 import com.russhwolf.settings.Settings
 
 class AppPreferencesImpl(
-    private val settings: Settings
-): AppPreferences {
+    multiplatformSettingsFactory: MultiplatformSettingsFactory
+) : AppPreferences {
+
+    val settings by lazy {
+        multiplatformSettingsFactory.getSettings()
+    }
 
     override fun getInt(key: String, defaultValue: Int): Int {
         return settings.getInt(key, defaultValue)
