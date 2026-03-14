@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">KMPMastery</string>
+    <string name="insert_product">प्रोडक्ट डालें</string>
+    <string name="delete">डिलीट करें</string>
+</resources>
